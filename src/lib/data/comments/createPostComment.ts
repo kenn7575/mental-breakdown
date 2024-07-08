@@ -1,15 +1,15 @@
 "use server";
 import { getDriver } from "../../neo4j";
 import type { Session } from "neo4j-driver";
-import { CreatePostComment } from "../../types";
+import { Comment, CreatePostComment, User } from "../../types";
 import { createPostCommentSchema } from "@/lib/zodSchemas";
 import { zodValidate } from "@/lib/zodValidate";
-import { getTokenPayload } from "@/app/actions/decodeAuthToken";
+import { getTokenPayload } from "@/lib/data/getTokenPayload";
 import { redirect } from "next/navigation";
-export async function createPostReaction(data: CreatePostComment): Promise<{
+export async function createPostComment(data: CreatePostComment): Promise<{
   status: "success" | "error";
+  comment?: Comment;
 }> {
-  console.log("createPostReaction");
   return await new Promise(async (resolve, reject) => {
     // validate the data
     const result = zodValidate(createPostCommentSchema, data);
@@ -17,7 +17,7 @@ export async function createPostReaction(data: CreatePostComment): Promise<{
       throw new Error("Invalid data");
     }
     const user = await getTokenPayload();
-    console.log("🚀 ~ returnawaitnewPromise ~ user:", user);
+
     if (!user?.id) {
       redirect(`/login?redirect=/posts/${data.post_id}`);
     }
@@ -30,19 +30,43 @@ export async function createPostReaction(data: CreatePostComment): Promise<{
       session = driver.session();
 
       //create connection from user to cemment and from comment to post
-      const comment = await session.run(
-        `create (u:User{id:"${
-          user.id
-        }"})-[r:COMMENTED {created_at: "${new Date().toISOString()}"}]->(c:Comment{id: toString(randomUUID()), comment_text: "${
-          data.comment
-        }", created_at: "${new Date().toISOString()}"})-[commented:WRITTEN_FOR {created_at: "${new Date().toISOString()}"]->(p:Post{id:"${
-          data.post_id
-        }"})`
+      const result = await session.run(
+        `MATCH (user:User {id: $userId})
+       MATCH (p:Post {id: $postId})
+       CREATE (user)-[commented:COMMENTED {created_at: $createdAt}]->(comment:Comment {id: toString(randomUUID()), comment_text: $commentText, created_at: $createdAt})
+       CREATE (comment)-[:WRITTEN_FOR {created_at: $createdAt}]->(p)
+       RETURN comment, commented, user;`,
+        {
+          userId: user.id,
+          postId: data.post_id,
+          commentText: data.comment,
+          createdAt: new Date().toISOString(),
+        }
       );
-      if (!comment.records.length) {
+
+      if (!result.records.length) {
         throw new Error("Failed to create comment");
       }
-      resolve({ status: "success" });
+
+      const record = result.records[0];
+
+      const comment: Comment = record.get("comment").properties;
+      const user1: User = record.get("user").properties;
+      const commented = record.get("commented").properties;
+      const commentFull = {
+        ...comment,
+        created_at: new Date(commented.created_at).toDateString(),
+        user_id: user1.id,
+        user_name: user1.username,
+        user_firstname: user1.firstname,
+        user_lastname: user1.lastname,
+        user_profile_picture: user1.profile_picture,
+      };
+
+      resolve({
+        status: "success",
+        comment: commentFull,
+      });
     } catch (error) {
       console.error(error);
       resolve({ status: "error" });

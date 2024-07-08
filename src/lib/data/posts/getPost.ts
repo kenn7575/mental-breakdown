@@ -59,7 +59,6 @@ RETURN u, p, posted, reactionData, commentCount`
         };
       });
 
-      console.log(postsWithUsers);
       resolve(postsWithUsers);
     } catch (error) {
       console.error(error);

@@ -84,7 +84,6 @@ export async function createUser(
     }
     user = users.records[0].get("u").properties;
 
-    console.log("🚀🚀🚀🚀🚀🚀 ~ users ~ users:", user);
     // Return the user
   } catch (error) {
     console.error(error);

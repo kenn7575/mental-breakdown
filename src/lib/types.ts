@@ -1,6 +1,6 @@
 export interface User {
   type: "node";
-  id?: string;
+  id: string;
   email: string;
   password: string;
   joined_date: string;
@@ -21,7 +21,7 @@ export interface User {
 
 export interface Post {
   type: "node";
-  id?: string;
+  id: string;
   title: string;
   body: string;
   image_url?: string;
@@ -38,7 +38,7 @@ export interface Post {
 
 export interface Reaction {
   type: "relationship";
-  id?: string;
+  id: string;
   created_at: string;
   reaction_type: string;
 
@@ -50,7 +50,7 @@ export interface Reaction {
 }
 export interface Comment {
   type: "node";
-  id?: string;
+  id: string;
   anwser_id: string;
   root_id: string;
   comment_text: string;
@@ -70,6 +70,9 @@ export interface CreatePostReaction {
 export interface CreatePostComment {
   post_id: string;
   comment: string;
+}
+export interface DeletePostComment {
+  commentId: string;
 }
 
 export interface UserFormState {

@@ -10,7 +10,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ThumbsUp } from "lucide-react";
 import { createPostReaction } from "@/lib/data/posts/createPostReaction";
-import { Reaction } from "@/lib/types";
 
 export default function ReactionMenu({
   reaction_count,

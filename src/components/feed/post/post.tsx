@@ -13,18 +13,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 
 import { Share2 } from "lucide-react";
-import { getTokenPayload } from "@/app/actions/decodeAuthToken";
+import { getTokenPayload } from "@/lib/data/getTokenPayload";
 
-import CommentSection from "./commentSection";
+import CommentSection from "./comments/commentSection";
 import type { Post as PostType } from "@/lib/types";
 import { formatTimeSince } from "@/lib/utils";
-import ReactionMenu from "./reactionMenu";
+import ReactionMenu from "./reactions/reactionMenu";
 export default async function Post({ post }: { post: PostType }) {
   const user = await getTokenPayload();
-  console.log(
-    "user reaction",
-    post.reactions?.find((r) => r.user_id === user?.id)?.reaction_type || ""
-  );
+
   return (
     <Card className="max-w-96">
       <CardHeader className="flex-row justify-between items-start">
@@ -80,12 +77,14 @@ export default async function Post({ post }: { post: PostType }) {
             }
           />
           <div className="flex flex-col gap-1 items-center">
-            <CommentSection postId={post.id || ""} />
-            <p className="text-center font-bold">
-              {new Intl.NumberFormat("en-US", { notation: "compact" })
-                .format(Number(post.comment_count))
-                .toString()}
-            </p>
+            <CommentSection
+              comment_count={post.comment_count}
+              userFirstName={user?.firstname}
+              userLastName={user?.lastname}
+              userName={user?.username}
+              userId={user?.id}
+              postId={post?.id || ""}
+            />
           </div>
         </div>
       </CardFooter>

@@ -22,7 +22,7 @@ export async function getDriver() {
     console.log("Connection estabilished");
     return driver;
   } catch (err) {
-    console.log(`Connection error\n${err}\nCause: ${JSON.stringify(err)}`);
+    console.error(`Connection error\n${err}\nCause: ${JSON.stringify(err)}`);
     throw err;
   } finally {
     console.log("Closing connection ❌");

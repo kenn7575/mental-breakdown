@@ -1,8 +1,8 @@
 import { getPosts } from "@/lib/data/posts/getPost";
-import Post from "./post";
+import Post from "./post/post";
 
 export default async function Feed() {
-  const posts = await getPosts();
+  let posts = await getPosts();
 
   return (
     <div>

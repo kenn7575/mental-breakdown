@@ -24,10 +24,6 @@ const initialState: UserFormState = {
 export default function Login() {
   const [state, formAction] = useFormState(loginUser, initialState);
 
-  useEffect(() => {
-    console.log("🚀 ~ Login ~ state:", state);
-  }, [state]);
-
   return (
     <form action={formAction}>
       <Card className="w-full max-w-sm border-primary/60 ">
