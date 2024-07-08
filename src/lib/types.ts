@@ -62,9 +62,15 @@ export interface Comment {
   user_profile_picture?: string;
   user_firstname?: string;
   user_lastname?: string;
+  reactions?: Reaction[];
 }
+
 export interface CreatePostReaction {
   post_id: string;
+  reaction_type: string;
+}
+export interface CreatePostCommentReaction {
+  post_comment_id: string;
   reaction_type: string;
 }
 export interface CreatePostComment {

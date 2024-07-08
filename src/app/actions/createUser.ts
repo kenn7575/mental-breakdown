@@ -28,7 +28,10 @@ export async function createUser(
     return results;
   }
 
-  const { password, email } = results.data;
+  const { password, email } = results.data as {
+    password: string;
+    email: string;
+  };
 
   // Hash the password
   const saltRounds = process.env.SALT_ROUNDS || 10;

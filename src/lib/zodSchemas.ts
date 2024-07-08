@@ -20,3 +20,7 @@ export const createPostCommentSchema = z.object({
   post_id: z.string().uuid(),
   comment: z.string().min(1),
 });
+export const createPostCommentReactionSchema = z.object({
+  post_comment_id: z.string().uuid(),
+  reaction_type: z.string(),
+});

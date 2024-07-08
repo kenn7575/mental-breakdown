@@ -29,7 +29,10 @@ export async function loginUser(
     return results;
   }
 
-  const { password, email } = results.data;
+  const { password, email } = results.data as {
+    password: string;
+    email: string;
+  };
 
   // Create a new user
   const driver = await getDriver();

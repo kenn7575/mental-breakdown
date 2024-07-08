@@ -2,7 +2,7 @@
 import { Send } from "lucide-react";
 import { Button } from "../../../ui/button";
 import { Textarea } from "../../../ui/textarea";
-import { createPostComment } from "@/lib/data/comments/createPostComment";
+import { createPostComment } from "@/lib/data/posts/comments/createPostComment";
 import { Comment } from "@/lib/types";
 
 export function CommentTextArea({

@@ -8,14 +8,14 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { getPostComments } from "@/lib/data/comments/getPostComments";
+import { getPostComments } from "@/lib/data/posts/comments/getPostComments";
 import { LoaderCircle, MessageCircle } from "lucide-react";
 import { Comment } from "@/lib/types";
 import { useState, useEffect } from "react";
 
 import { CommentTextArea } from "./commentUploader";
-import { detelePostComment } from "@/lib/data/comments/deleteComment";
-import { createPostComment } from "@/lib/data/comments/createPostComment";
+import { detelePostComment } from "@/lib/data/posts/comments/deleteComment";
+import { createPostComment } from "@/lib/data/posts/comments/createPostComment";
 import { CommentSectionContent } from "./commentSectionContent";
 
 export default function CommentSection({
@@ -44,8 +44,9 @@ export default function CommentSection({
   }, [postId, isOpened]);
 
   const fetchComments = async () => {
-    // setLoading(true);
     const data = await getPostComments(postId);
+    console.log("🚀 ~ fetchComments ~ data:", data[0].reactions[0]);
+
     setComments(data);
     setLoading(false);
   };
