@@ -1,5 +1,4 @@
 "use client";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 
@@ -16,75 +15,15 @@ import {
   ThumbsDown,
   ThumbsUp,
 } from "lucide-react";
-import { Comment, Reaction } from "@/lib/types";
+import type { Comment } from "@/lib/types";
+
 import { formatTimeSince } from "@/lib/utils";
-import { createPostCommentReaction } from "@/lib/data/posts/comments/reactions/createPostCommentReaction";
-import { useEffect, useState } from "react";
+import { useComments } from "../../../../hooks/useComments";
+import { useUser } from "@/hooks/useUser";
 
-export function CommentContent({
-  comment,
-  onDeleted,
-  userId,
-  onReaction,
-}: {
-  comment: Comment;
-  onReaction: () => void;
-  onDeleted: (commentId: string) => void;
-  userId: string | undefined;
-}) {
-  const [reaction, setReaction] = useState<string>(
-    comment.reactions?.find((r) => r.user_id === userId)?.reaction_type || ""
-  );
-  const [reactions, setReactions] = useState(comment.reactions || []);
-
-  function handleReaction(reactionType: string) {
-    if (reactionType === reaction) {
-      // Remove reaction
-      setReaction("");
-      setReactions((prevReactions) =>
-        prevReactions.filter(
-          (r) => !(r.user_id === userId && r.reaction_type === reactionType)
-        )
-      );
-    } else {
-      // Add or change reaction
-      setReaction(reactionType);
-      setReactions((prevReactions) => {
-        const existingReactionIndex = prevReactions.findIndex(
-          (r) => r.user_id === userId
-        );
-        if (existingReactionIndex !== -1) {
-          // Change existing reaction
-          const updatedReactions = [...prevReactions];
-          updatedReactions[existingReactionIndex].reaction_type = reactionType;
-          return updatedReactions;
-        } else {
-          // Add new reaction
-          return [
-            ...prevReactions,
-            {
-              user_id: userId || "",
-              reaction_type: reactionType,
-              type: "relationship",
-              id: "",
-              created_at: new Date().toISOString(),
-            },
-          ];
-        }
-      });
-    }
-
-    createPostCommentReaction({
-      post_comment_id: comment.id,
-      reaction_type: reactionType,
-    }).then((res) => {
-      if (res.status === "error") {
-        console.log("error");
-      }
-    });
-    onReaction();
-  }
-
+export function CommentContent({ comment }: { comment: Comment }) {
+  const { user } = useUser();
+  const { deleteComment, reactToComment } = useComments();
   return (
     <div key={comment.id} className="flex justify-between">
       <div className="flex flex-col justify-center ">
@@ -121,18 +60,14 @@ export function CommentContent({
               <div className="flex gap-2">
                 <button
                   onClick={() => {
-                    handleReaction("like");
+                    reactToComment(comment.id, "like");
                   }}
                   className="text-muted-foreground hover:underline"
                 >
-                  <ThumbsUp
-                    className={reaction === "like" ? "stroke-foreground" : ""}
-                    size={18}
-                    strokeWidth={reaction === "like" ? 3 : 2}
-                  />
+                  <ThumbsUp size={18} />
                 </button>
                 <p className="text-muted-foreground  font-semibold">
-                  {reactions?.filter(
+                  {comment.reactions?.filter(
                     (reaction) => reaction.reaction_type == "like"
                   ).length || ""}
                 </p>
@@ -140,22 +75,16 @@ export function CommentContent({
               <div className="flex gap-2">
                 <button
                   onClick={() => {
-                    handleReaction("dislike");
+                    reactToComment(comment.id, "dislike");
                   }}
                   className="text-muted-foreground hover:underline"
                 >
-                  <ThumbsDown
-                    className={
-                      reaction === "dislike" ? "stroke-foreground" : ""
-                    }
-                    size={18}
-                    strokeWidth={reaction === "dislike" ? 3 : 2}
-                  />
+                  <ThumbsDown size={18} />
                 </button>
 
                 <p className="text-muted-foreground  font-semibold">
                   {" "}
-                  {reactions?.filter(
+                  {comment.reactions?.filter(
                     (reaction) => reaction.reaction_type == "dislike"
                   ).length || ""}
                 </p>
@@ -174,15 +103,16 @@ export function CommentContent({
           <EllipsisVertical size={18} className="mt-4 text-muted-foreground" />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          {userId && userId === comment?.user_id && (
+          {user && user.id === comment?.user_id && (
             <DropdownMenuItem
               onClick={() => {
-                onDeleted(comment.id);
+                deleteComment(comment.id);
               }}
             >
               Delete
             </DropdownMenuItem>
           )}
+          <DropdownMenuItem>Report</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

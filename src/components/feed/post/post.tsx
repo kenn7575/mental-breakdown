@@ -15,13 +15,13 @@ import Link from "next/link";
 import { Share2 } from "lucide-react";
 import { getTokenPayload } from "@/lib/data/getTokenPayload";
 
-import CommentSection from "./comments/commentSection";
+import { CommentSection } from "./comments/commentSection";
 import type { Post as PostType } from "@/lib/types";
 import { formatTimeSince } from "@/lib/utils";
 import ReactionMenu from "./reactions/reactionMenu";
 export default async function Post({ post }: { post: PostType }) {
   const user = await getTokenPayload();
-
+  console.log("post: ", post);
   return (
     <Card className="max-w-96">
       <CardHeader className="flex-row justify-between items-start">
@@ -78,11 +78,7 @@ export default async function Post({ post }: { post: PostType }) {
           />
           <div className="flex flex-col gap-1 items-center">
             <CommentSection
-              comment_count={post.comment_count}
-              userFirstName={user?.firstname}
-              userLastName={user?.lastname}
-              userName={user?.username}
-              userId={user?.id}
+              commentCount={post.comment_count || 0}
               postId={post?.id || ""}
             />
           </div>

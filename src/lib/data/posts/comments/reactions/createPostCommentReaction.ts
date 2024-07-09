@@ -1,7 +1,7 @@
 "use server";
 import { getDriver } from "@/lib/neo4j";
 import type { Session } from "neo4j-driver";
-import { CreatePostCommentReaction } from "@/lib/types";
+import { CreatePostCommentReaction, Post } from "@/lib/types";
 import { createPostCommentReactionSchema as cpcrs } from "@/lib/zodSchemas";
 import { zodValidate } from "@/lib/zodValidate";
 import { getTokenPayload } from "@/lib/data/getTokenPayload";
@@ -11,7 +11,10 @@ export async function createPostCommentReaction(
   data: CreatePostCommentReaction
 ): Promise<{
   status: "added" | "updated" | "error" | "deleted";
+  postId?: string;
 }> {
+  console.log("🚀 ~ data:", data);
+
   return new Promise(async (resolve, reject) => {
     // Validate the data
     const result = zodValidate(cpcrs, data);
@@ -37,29 +40,32 @@ export async function createPostCommentReaction(
 
       // Check if the user has already reacted to the post
       const reactionExists = await tx.run(
-        `MATCH (:User{id:$userId})-[r:REACTED_TO]->(:Comment{id:$commentId})
-         RETURN r`,
+        `MATCH (:User{id:$userId})-[r:REACTED_TO]->(:Comment{id:$commentId})-[:WRITTEN_FOR]->(p:Post)
+         RETURN r, p;`,
         { userId: user.id, commentId: data.post_comment_id }
       );
 
       if (reactionExists.records.length) {
         if (data.reaction_type === "none") {
           // Remove the reaction
-          await tx.run(
-            `MATCH (:User{id:$userId})-[r:REACTED_TO]->(:Comment{id:$commentId})
-             DELETE r`,
+          const res = await tx.run(
+            `MATCH (:User{id:$userId})-[r:REACTED_TO]->(:Comment{id:$commentId})-[:WRITTEN_FOR]->(p:Post)
+             DELETE r RETURN  p;`,
             { userId: user.id, commentId: data.post_comment_id }
           );
+          const postId: string = res.records[0].get("p").properties?.id;
+          if (postId) revalidatePath(`/app/posts/${postId}`);
+          revalidatePath(`/app`);
 
           // Commit the transaction
           await tx.commit();
-          resolve({ status: "deleted" });
+          resolve({ status: "deleted", postId });
         } else {
           // Update the reaction type and created_at property
-          await tx.run(
-            `MATCH (u:User{id:$userId})-[r:REACTED_TO]->(:Comment{id:$commentId})
+          const res = await tx.run(
+            `MATCH (u:User{id:$userId})-[r:REACTED_TO]->(:Comment{id:$commentId})-[:WRITTEN_FOR]->(p:Post)
              SET r.reaction_type = $reactionType, r.created_at = $createdAt
-             RETURN r`,
+             RETURN p;`,
             {
               userId: user.id,
               commentId: data.post_comment_id,
@@ -67,17 +73,20 @@ export async function createPostCommentReaction(
               createdAt: new Date().toISOString(),
             }
           );
+          const postId: string = res.records[0].get("p").properties?.id;
+          if (postId) revalidatePath(`/app/posts/${postId}`);
+          revalidatePath(`/app`);
 
           // Commit the transaction
           await tx.commit();
           revalidatePath("/app");
-          resolve({ status: "updated" });
+          resolve({ status: "updated", postId });
         }
       } else {
         // Create a new reaction
-        await tx.run(
-          `MATCH (u:User{id:$userId}), (c:Comment{id:$commentId})
-           MERGE (u)-[:REACTED_TO{reaction_type:$reactionType, created_at:$createdAt, id: toString(randomUUID())}]->(c)`,
+        const res = await tx.run(
+          `MATCH (u:User{id:$userId}), (c:Comment{id:$commentId})-[:WRITTEN_FOR]->(p:Post)
+           MERGE (u)-[:REACTED_TO{reaction_type:$reactionType, created_at:$createdAt, id: toString(randomUUID())}]->(c) RETURN  p;`,
           {
             userId: user.id,
             commentId: data.post_comment_id,
@@ -85,10 +94,12 @@ export async function createPostCommentReaction(
             createdAt: new Date().toISOString(),
           }
         );
-
+        const postId: string = res.records[0].get("p").properties?.id;
+        if (postId) revalidatePath(`/app/posts/${postId}`);
+        revalidatePath(`/app`);
         // Commit the transaction
         await tx.commit();
-        resolve({ status: "added" });
+        resolve({ status: "added", postId });
       }
     } catch (error) {
       console.error(error);

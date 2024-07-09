@@ -1,18 +1,10 @@
 "use client";
+import { Textarea } from "@/components/ui/textarea";
+import { useComments } from "../../../../hooks/useComments";
+import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
-import { Button } from "../../../ui/button";
-import { Textarea } from "../../../ui/textarea";
-import { createPostComment } from "@/lib/data/posts/comments/createPostComment";
-import { Comment } from "@/lib/types";
-//diasble next cache
-export const dynamic = "force-dynamic";
-export function CommentTextArea({
-  postId,
-  onNewComment,
-}: {
-  postId: string;
-  onNewComment: (comment: string) => void;
-}) {
+export function MessageField({ postId }: { postId: string }) {
+  const { addComment } = useComments();
   return (
     <div className="w-full relative flex">
       <Textarea
@@ -20,7 +12,7 @@ export function CommentTextArea({
         className="pr-12"
         onKeyDown={(e) => {
           if (e.metaKey && e.key === "Enter") {
-            onNewComment(e.currentTarget.value);
+            addComment(postId, e.currentTarget.value);
             e.currentTarget.value = "";
           }
         }}

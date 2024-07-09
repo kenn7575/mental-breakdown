@@ -1,63 +1,29 @@
 "use client";
+import { LoaderCircle } from "lucide-react";
+import { useComments } from "../../../../hooks/useComments";
+import { CommentContent } from "./commentContent";
+import { MessageField } from "./messageField";
+import { useUser } from "@/hooks/useUser";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import Link from "next/link";
-import {
-  EllipsisVertical,
-  MessageCircle,
-  MessageCircleReply,
-  ThumbsDown,
-  ThumbsUp,
-} from "lucide-react";
-import { Comment } from "@/lib/types";
-import { formatTimeSince } from "@/lib/utils";
-import { createPostCommentReaction } from "@/lib/data/posts/comments/reactions/createPostCommentReaction";
-import { useEffect, useState } from "react";
-import { CommentContent } from "./comment";
-
-export function CommentSectionContent({
-  comments,
-  userId,
-  onDeleted,
-  onReaction,
-}: {
-  comments: Comment[];
-  userId: string | undefined;
-  onDeleted: (commentId: string) => void;
-  onReaction: () => void;
-}) {
-  function handleReaction(commentId: string, reactionType: string) {
-    createPostCommentReaction({
-      post_comment_id: commentId,
-      reaction_type: reactionType,
-    }).then((res) => {
-      if (res.status === "error") {
-        console.log("error");
-      } else {
-        console.log("success. Reaction set to: ", reactionType);
-      }
-    });
-  }
-
+export function CommentSectionContent({ postId }: { postId: string }) {
+  const { user } = useUser();
+  const { comments, loading } = useComments();
   return (
-    <div>
-      {comments.map((comment) => (
-        <CommentContent
-          onReaction={onReaction}
-          key={comment.id}
-          comment={comment}
-          userId={userId}
-          onDeleted={onDeleted}
-        />
-      ))}
+    <div className="mt-8 flex !flex-col !justify-between h-full w-full">
+      {loading && (
+        <LoaderCircle strokeWidth={1.5} className="m-auto  animate-spin">
+          Loading...
+        </LoaderCircle>
+      )}
+      {!loading && comments.length === 0 && <p>No comments yet.</p>}
+      {!loading && comments.length > 0 && (
+        <div>
+          {comments.map((comment) => (
+            <CommentContent comment={comment} />
+          ))}
+        </div>
+      )}
+      {user && <MessageField postId={postId} />}
     </div>
   );
 }

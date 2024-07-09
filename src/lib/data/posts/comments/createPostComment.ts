@@ -1,11 +1,12 @@
 "use server";
 import { getDriver } from "../../../neo4j";
 import type { Session } from "neo4j-driver";
-import { Comment, CreatePostComment, User } from "../../../types";
+import { Comment, CreatePostComment, Post, User } from "../../../types";
 import { createPostCommentSchema } from "@/lib/zodSchemas";
 import { zodValidate } from "@/lib/zodValidate";
 import { getTokenPayload } from "@/lib/data/getTokenPayload";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 export async function createPostComment(data: CreatePostComment): Promise<{
   status: "success" | "error";
   comment?: Comment;
@@ -35,7 +36,7 @@ export async function createPostComment(data: CreatePostComment): Promise<{
        MATCH (p:Post {id: $postId})
        CREATE (user)-[commented:COMMENTED {created_at: $createdAt}]->(comment:Comment {id: toString(randomUUID()), comment_text: $commentText, created_at: $createdAt})
        CREATE (comment)-[:WRITTEN_FOR {created_at: $createdAt}]->(p)
-       RETURN comment, commented, user;`,
+       RETURN comment, commented, user, p.id AS p;`,
         {
           userId: user.id,
           postId: data.post_id,
@@ -47,6 +48,9 @@ export async function createPostComment(data: CreatePostComment): Promise<{
       if (!result.records.length) {
         throw new Error("Failed to create comment");
       }
+      const postId: string = result.records[0].get("p").properties?.id;
+      if (postId) revalidatePath(`/app/posts/${postId}`);
+      revalidatePath(`/app`);
 
       const record = result.records[0];
 

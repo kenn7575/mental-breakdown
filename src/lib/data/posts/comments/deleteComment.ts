@@ -5,6 +5,7 @@ import { DeletePostComment } from "../../../types";
 
 import { zodValidate } from "@/lib/zodValidate";
 import { getTokenPayload } from "@/lib/data/getTokenPayload";
+import { revalidatePath } from "next/cache";
 
 export async function detelePostComment(
   commentId: string | undefined
@@ -31,9 +32,17 @@ export async function detelePostComment(
       session = driver.session();
 
       //Detele comment
-      await session.run(`match (c:Comment {id: $commentId}) DETACH DELETE c;`, {
-        commentId: commentId,
-      });
+      const res = await session.run(
+        `match (c:Comment {id: $commentId})-[:WRITTEN_FOR]->(p:Post) DETACH DELETE c RETURN p;`,
+        {
+          commentId: commentId,
+        }
+      );
+      const postId: string = res.records[0].get("p").properties?.id;
+      console.log("🚀 ~ returnawaitnewPromise ~ postId:", postId);
+      if (postId) revalidatePath(`/app/posts/${postId}`);
+      revalidatePath(`/app`);
+
       resolve({
         status: "success",
       });
