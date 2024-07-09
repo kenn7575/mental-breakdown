@@ -45,7 +45,7 @@ export default function CommentSection({
 
   const fetchComments = async () => {
     const data = await getPostComments(postId);
-    console.log("🚀 ~ fetchComments ~ data:", data[0].reactions[0]);
+    console.log("🚀 ~ fetchComments ~ data:", data);
 
     setComments(data);
     setLoading(false);
@@ -53,9 +53,6 @@ export default function CommentSection({
 
   const onOpenChange = (isOpen: boolean) => {
     setIsOpened(isOpen);
-    if (isOpen) {
-      fetchComments();
-    }
   };
 
   const handleNewComment = async (commentText: string) => {
@@ -132,6 +129,7 @@ export default function CommentSection({
               {!loading && comments.length === 0 && <p>No comments yet.</p>}
               {!loading && comments.length > 0 && (
                 <CommentSectionContent
+                  onReaction={fetchComments}
                   onDeleted={handleDeleteComment}
                   userId={userId}
                   comments={comments}
@@ -174,6 +172,7 @@ export default function CommentSection({
               {!loading && comments.length === 0 && <p>No comments yet.</p>}
               {!loading && comments.length > 0 && (
                 <CommentSectionContent
+                  onReaction={fetchComments}
                   onDeleted={handleDeleteComment}
                   userId={userId}
                   comments={comments}

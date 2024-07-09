@@ -4,7 +4,8 @@ import { Button } from "../../../ui/button";
 import { Textarea } from "../../../ui/textarea";
 import { createPostComment } from "@/lib/data/posts/comments/createPostComment";
 import { Comment } from "@/lib/types";
-
+//diasble next cache
+export const dynamic = "force-dynamic";
 export function CommentTextArea({
   postId,
   onNewComment,
