@@ -33,3 +33,22 @@ export function formatTimeSince(date: string | Date): string {
     return Math.floor(timeElapsed / 29030400000) + " y";
   }
 }
+
+export function removeSecondEmptyString(lst: string[]): string[] {
+  let consecutiveEmptyCount = 0;
+  const result: string[] = [];
+
+  for (const item of lst) {
+    if (item === "") {
+      consecutiveEmptyCount += 1;
+      if (consecutiveEmptyCount > 1) {
+        continue;
+      }
+    } else {
+      consecutiveEmptyCount = 0;
+    }
+    result.push(item);
+  }
+
+  return result;
+}

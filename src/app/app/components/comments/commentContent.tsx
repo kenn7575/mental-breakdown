@@ -1,4 +1,5 @@
 "use client";
+import { CommentReactions } from "./commentReactions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 
@@ -17,7 +18,7 @@ import {
 } from "lucide-react";
 import type { Comment } from "@/lib/types";
 
-import { formatTimeSince } from "@/lib/utils";
+import { formatTimeSince, removeSecondEmptyString } from "@/lib/utils";
 import { useComments } from "../../../../hooks/useComments";
 import { useUser } from "@/hooks/useUser";
 
@@ -54,46 +55,18 @@ export function CommentContent({ comment }: { comment: Comment }) {
               <p className="text-sm text-muted-foreground">
                 @{comment.user_name}
               </p>
-              <p className="mt-2 font-medium">{comment.comment_text}</p>
+              <p className="mt-2 font-medium">
+                {removeSecondEmptyString(comment.comment_text.split("\n")).map(
+                  (text, index) => (
+                    <span key={index}>
+                      {text}
+                      <br />
+                    </span>
+                  )
+                )}
+              </p>
             </Link>
-            <div className="flex gap-8 mt-2 mb-2 ">
-              <div className="flex gap-2">
-                <button
-                  onClick={() => {
-                    reactToComment(comment.id, "like");
-                  }}
-                  className="text-muted-foreground hover:underline"
-                >
-                  <ThumbsUp size={18} />
-                </button>
-                <p className="text-muted-foreground  font-semibold">
-                  {comment.reactions?.filter(
-                    (reaction) => reaction.reaction_type == "like"
-                  ).length || ""}
-                </p>
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => {
-                    reactToComment(comment.id, "dislike");
-                  }}
-                  className="text-muted-foreground hover:underline"
-                >
-                  <ThumbsDown size={18} />
-                </button>
-
-                <p className="text-muted-foreground  font-semibold">
-                  {" "}
-                  {comment.reactions?.filter(
-                    (reaction) => reaction.reaction_type == "dislike"
-                  ).length || ""}
-                </p>
-              </div>
-
-              <button className="text-muted-foreground hover:underline">
-                <MessageCircleReply size={18} />
-              </button>
-            </div>
+            <CommentReactions comment={comment} />
           </div>
         </div>
       </div>

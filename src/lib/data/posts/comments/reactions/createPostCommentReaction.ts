@@ -47,6 +47,7 @@ export async function createPostCommentReaction(
 
       if (reactionExists.records.length) {
         if (data.reaction_type === "none") {
+          console.log("deleting reaction");
           // Remove the reaction
           const res = await tx.run(
             `MATCH (:User{id:$userId})-[r:REACTED_TO]->(:Comment{id:$commentId})-[:WRITTEN_FOR]->(p:Post)

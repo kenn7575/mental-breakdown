@@ -34,7 +34,8 @@ export const CommentsProvider = ({ children }: { children: ReactNode }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const fetchComments = async (postId: string) => {
+  const fetchComments = async (postId: string, doloading?: boolean) => {
+    if (doloading) setLoading(true);
     const data = await getPostComments(postId);
     setComments(data);
     setLoading(false);
@@ -45,26 +46,18 @@ export const CommentsProvider = ({ children }: { children: ReactNode }) => {
     if (!user) {
       throw new Error("User not found");
     }
-    const comment: Comment = {
-      id: "0",
-      user_id: user.id, // Replace with actual user ID
-      comment_text: commentText,
-      created_at: new Date().toString(),
-      type: "node",
-      anwser_id: "",
-      root_id: "",
-      user_name: user.username, // Replace with actual user name
-      user_firstname: user.firstname, // Replace with actual user first name
-      user_lastname: user.lastname, // Replace with actual user last name
-    };
-    setComments((prevComments) => [comment, ...prevComments]);
     await createPostComment({
       post_id: postId,
-      comment: comment.comment_text,
+      comment: commentText,
     });
+    fetchComments(postId, true);
   };
 
   const deleteComment = async (commentId: string) => {
+    const user = await getTokenPayload();
+    if (!user) {
+      throw new Error("User not found");
+    }
     await detelePostComment(commentId);
     setComments((prevComments) =>
       prevComments.filter((comment) => comment.id !== commentId)
@@ -72,49 +65,84 @@ export const CommentsProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const reactToComment = async (commentId: string, reactionType: string) => {
-    const user = await getTokenPayload();
-    if (!user) {
-      throw new Error("User not found");
-    }
-    const newReaction: Reaction = {
-      id: "0",
-      user_id: user.id, // Replace with actual user ID
-      reaction_type: reactionType,
-      created_at: new Date().toString(),
-      type: "relationship", // Assuming 'type' field is required
-    };
-
-    // Optimistically update the state
-    const previousComments = comments;
-    setComments((prevComments) =>
-      prevComments.map((comment) =>
-        comment.id === commentId
-          ? {
-              ...comment,
-              reactions: comment.reactions
-                ? [
-                    ...comment.reactions.filter(
-                      (r) => r.user_id !== "currentUser"
-                    ),
-                    newReaction,
-                  ]
-                : [newReaction],
-            }
-          : comment
-      )
-    );
+    const previousComments = [...comments];
 
     try {
+      const user = await getTokenPayload();
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      const newReaction: Reaction = {
+        id: "0",
+        user_id: user.id,
+        reaction_type: reactionType,
+        created_at: new Date().toString(),
+        type: "relationship", // Assuming 'type' field is required
+      };
+
+      // Optimistically update the state
+      let updatedComments;
+
+      if (reactionType === "none") {
+        console.log("Removing reaction");
+        updatedComments = removeReactionFromComment(commentId, user.id);
+      } else {
+        updatedComments = addOrUpdateReaction(commentId, newReaction, user.id);
+      }
+
+      setComments(updatedComments);
+
       const res = await createPostCommentReaction({
         post_comment_id: commentId,
         reaction_type: reactionType,
       });
+
       if (res.postId) fetchComments(res.postId);
     } catch (error) {
       console.error("Failed to create reaction", error);
       // Revert to previous state if the API call fails
       setComments(previousComments);
     }
+  };
+
+  const removeReactionFromComment = (commentId: string, userId: string) => {
+    return comments.map((comment) =>
+      comment.id === commentId
+        ? {
+            ...comment,
+            reactions: comment.reactions
+              ? comment.reactions.filter((r) => r.user_id !== userId)
+              : [],
+          }
+        : comment
+    );
+  };
+
+  const addOrUpdateReaction = (
+    commentId: string,
+    newReaction: Reaction,
+    userId: string
+  ) => {
+    return comments.map((comment) => {
+      if (comment.id === commentId) {
+        const existingReaction = comment.reactions
+          ? comment.reactions.find((r) => r.user_id === userId)
+          : null;
+
+        const updatedReactions = existingReaction
+          ? comment?.reactions?.map((r) =>
+              r.user_id === userId ? newReaction : r
+            )
+          : [...(comment.reactions || []), newReaction];
+
+        return {
+          ...comment,
+          reactions: updatedReactions,
+        };
+      }
+      return comment;
+    });
   };
   return (
     <CommentsContext.Provider

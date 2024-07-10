@@ -17,7 +17,7 @@ export function CommentSectionContent({ postId }: { postId: string }) {
       )}
       {!loading && comments.length === 0 && <p>No comments yet.</p>}
       {!loading && comments.length > 0 && (
-        <div>
+        <div className="max-h-max overflow-y-scroll mb-4">
           {comments.map((comment) => (
             <CommentContent comment={comment} />
           ))}

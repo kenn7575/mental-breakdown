@@ -10,6 +10,8 @@
     "dev-host": "next dev -H 192.168.1.148"
   },
   "dependencies": {
+    "@giphy/js-fetch-api": "^5.6.0",
+    "@giphy/react-components": "^9.5.0",
     "@hookform/resolvers": "^3.6.0",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-alert-dialog": "^1.1.1",

@@ -1,4 +1,4 @@
-import Feed from "@/components/feed/feed";
+import Feed from "./components/feed";
 
 export default function Page() {
   return <Feed />;
