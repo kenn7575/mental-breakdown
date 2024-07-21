@@ -4,7 +4,7 @@ import type { Session } from "neo4j-driver";
 import { CreatePostCommentReaction, Post } from "@/lib/types";
 import { createPostCommentReactionSchema as cpcrs } from "@/lib/zodSchemas";
 import { zodValidate } from "@/lib/zodValidate";
-import { getTokenPayload } from "@/lib/data/getTokenPayload";
+import { getTokenPayload } from "@/app/actions/getTokenPayload";
 import { revalidatePath } from "next/cache";
 
 export async function createPostCommentReaction(

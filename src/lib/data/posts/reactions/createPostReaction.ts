@@ -4,7 +4,7 @@ import type { Session } from "neo4j-driver";
 import { CreatePostReaction } from "../../../types";
 import { createPostReactionSchema } from "@/lib/zodSchemas";
 import { zodValidate } from "@/lib/zodValidate";
-import { getTokenPayload } from "@/lib/data/getTokenPayload";
+import { getTokenPayload } from "@/app/actions/getTokenPayload";
 import { redirect } from "next/navigation";
 export async function createPostReaction(data: CreatePostReaction): Promise<{
   status: "added" | "updated" | "error" | "deleted";

@@ -1,52 +1,90 @@
-"use client";
+import { useState, useEffect, useCallback } from "react";
 import { Grid } from "@giphy/react-components";
-import { GiphyFetch } from "@giphy/js-fetch-api";
+import { GifsResult, GiphyFetch } from "@giphy/js-fetch-api";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 import { Button } from "@/components/ui/button";
 import { ImagePlay } from "lucide-react";
-
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { env } from "process";
-export function GifSelector() {
-  const gf = new GiphyFetch(process.env.REACT_APP_GIPHY_API_KEY || "");
-  console.log("env", env.REACT_APP_GIPHY_API_KEY);
+import { Input } from "@/components/ui/input";
 
-  // configure your fetch: fetch 10 gifs at a time as the user scrolls (offset is handled by the grid)
-  const fetchGifs = (offset: number) =>
-    gf.search("mental breakdown", { offset, limit: 2 });
+export function GifSelector({
+  onGifSelect,
+}: {
+  onGifSelect: (gif: string) => void;
+}) {
+  const gf = new GiphyFetch(process.env.NEXT_PUBLIC_GIPHY_API_KEY || "");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [gifs, setGifs] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  // Fetch GIFs function that returns the expected type
+  const fetchGifs = useCallback(
+    async (offset: number): Promise<GifsResult> => {
+      setLoading(true);
+      const result = await gf.search(searchQuery, { offset, limit: 10 });
+      setLoading(false);
+      return result;
+    },
+    [searchQuery]
+  );
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  useEffect(() => {
+    fetchGifs(0).then((result) => setGifs(result.data));
+  }, [searchQuery, fetchGifs]);
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
+    <Popover>
+      <PopoverTrigger asChild>
         <Button variant="ghost" size="icon">
           <ImagePlay />
         </Button>
-      </DialogTrigger>
-      <DialogContent className="w- overflow-scroll">
-        <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-        </DialogHeader>
-        <ScrollArea className="h-72 w-full rounded-md border">
-          <Grid
-            onGifClick={(gif) => {
-              console.log(gif.images.original.webp);
-            }}
-            noLink={true}
-            width={334}
-            columns={2}
-            fetchGifs={fetchGifs}
-          />
-        </ScrollArea>
-      </DialogContent>
-    </Dialog>
+      </PopoverTrigger>
+      <PopoverContent className="w-[400px] max-h-96">
+        <div>
+          <div className="flex items-center mb-2">
+            <Input
+              type="text"
+              className=""
+              placeholder="Search in Giphy"
+              value={searchQuery}
+              onChange={handleInputChange}
+            />
+            <img
+              src="/giphy.png"
+              className="mix-blend-screen ml-auto object-contain"
+              width="90px"
+              alt="powered by giphy"
+            />
+          </div>
+          <ScrollArea className="w-full h-72 rounded border">
+            {loading ? (
+              <p>Loading...</p>
+            ) : (
+              <Grid
+                key={searchQuery} // Force Grid to re-render on search query change
+                onGifClick={(gif) => {
+                  onGifSelect(gif.images.original.url);
+                }}
+                noLink={true}
+                className="hover:cursor-pointer"
+                width={366}
+                columns={2}
+                hideAttribution={true}
+                fetchGifs={fetchGifs}
+              />
+            )}
+          </ScrollArea>
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 }

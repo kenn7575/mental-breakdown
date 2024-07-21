@@ -7,7 +7,7 @@ import { getPostComments } from "@/lib/data/posts/comments/getPostComments";
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import { Comment, Reaction } from "@/lib/types";
 
-import { getTokenPayload } from "@/lib/data/getTokenPayload";
+import { getTokenPayload } from "@/app/actions/getTokenPayload";
 
 interface CommentsContextProps {
   comments: Comment[];

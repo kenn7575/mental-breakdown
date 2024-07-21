@@ -45,6 +45,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
+    "firebase": "^10.12.3",
     "jose": "^5.4.1",
     "lucide-react": "^0.397.0",
     "neo4j-driver": "^5.21.0",

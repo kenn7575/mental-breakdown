@@ -4,7 +4,7 @@ import type { Session } from "neo4j-driver";
 import { Comment, CreatePostComment, Post, User } from "../../../types";
 import { createPostCommentSchema } from "@/lib/zodSchemas";
 import { zodValidate } from "@/lib/zodValidate";
-import { getTokenPayload } from "@/lib/data/getTokenPayload";
+import { getTokenPayload } from "@/app/actions/getTokenPayload";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 export async function createPostComment(data: CreatePostComment): Promise<{

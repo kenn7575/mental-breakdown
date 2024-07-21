@@ -20,30 +20,25 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 
 const maxTitleLength = 75;
 const maxDescriptionLength = 1000;
-import { Grid } from "@giphy/react-components";
-import { GiphyFetch } from "@giphy/js-fetch-api";
+
 import { Image, ImagePlay, Smile, UserRoundSearch } from "lucide-react";
 import { GifSelector } from "./components/gifSelector";
-
-// use @giphy/js-fetch-api to fetch gifs, instantiate with your api key
-const gf = new GiphyFetch("70tslSiZt83T3M2MPqlwGF2Us2JXfc1F");
-
-// configure your fetch: fetch 10 gifs at a time as the user scrolls (offset is handled by the grid)
-const fetchGifs = (offset: number) =>
-  gf.search("mental breakdown", { offset, limit: 10 });
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { uploadFile } from "@/lib/firebase";
 
 // Render the React Component and pass it your fetchGifs as a prop
 
 export default function CardWithForm() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [image, setImage] = useState<null | HTMLImageElement>(null);
 
   //ref for image
-  const image = useRef<null | HTMLImageElement>(null);
+  //   const image = useRef<null | HTMLImageElement>(null);
 
   return (
     <div className="flex justify-center items-center px-4 mt-4">
@@ -94,14 +89,8 @@ export default function CardWithForm() {
                   setTitle(e.currentTarget.value);
                 }}
                 placeholder="Name of your project"
-              />
-              {image.current && (
-                <img
-                  src={image.current.src}
-                  alt="uploaded image"
-                  className="w-32 h-32"
-                />
-              )} */}
+              />*/}
+
               <div className="flex flex-col space-y-1.5 ">
                 <Label htmlFor="description">Description</Label>
                 <div className="relative">
@@ -130,19 +119,50 @@ export default function CardWithForm() {
               </div>
             </div>
           </form>
+          {image !== null && (
+            <img
+              src={image.src}
+              alt="uploaded image"
+              className="h-full object-contain w-full max-h-60  mt-2 rounded-md"
+            />
+          )}
         </CardContent>
 
         <CardFooter className="flex flex-col">
           <div className="flex justify-between border-input  py-2 px-4 w-full bg-muted items-center rounded-md">
             <p className="font-semibold">Add to your post</p>
             <div className="flex gap-2">
-              <Button variant="ghost" size="icon">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  //create file input element and trigger click
+                  const input = document.createElement("input");
+                  input.type = "file";
+                  input.accept = "image/*";
+                  input.onchange = (e) => {
+                    if (!input.files) return;
+                    //create a img element and save it in image ref
+                    const img = document.createElement("img");
+                    img.src = URL.createObjectURL(input.files[0]);
+                    setImage(img);
+                    uploadFile(input.files[0] as File, "testImage");
+                  };
+                  input.click();
+                }}
+              >
                 <Image />
               </Button>
               <Button variant="ghost" size="icon">
                 <UserRoundSearch />
               </Button>
-              <GifSelector />
+              <GifSelector
+                onGifSelect={(url) => {
+                  const img = document.createElement("img");
+                  img.src = url;
+                  setImage(img);
+                }}
+              />
               <Button variant="ghost" size="icon">
                 <Smile />
               </Button>

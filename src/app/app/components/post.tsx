@@ -12,8 +12,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import Link from "next/link";
 
-import { Share2 } from "lucide-react";
-import { getTokenPayload } from "@/lib/data/getTokenPayload";
+import { CornerDownRight, Share2 } from "lucide-react";
+import { getTokenPayload } from "@/app/actions/getTokenPayload";
 
 import { CommentSection } from "./comments/commentSection";
 import type { Post as PostType } from "@/lib/types";
@@ -24,35 +24,45 @@ export default async function Post({ post }: { post: PostType }) {
   console.log("post: ", post);
   return (
     <Card className="max-w-96">
-      <CardHeader className="flex-row justify-between items-start">
-        <div className="flex items-center justify-between space-x-4">
-          <Link href="#" className="flex items-center space-x-4">
-            <Avatar>
-              <AvatarImage src={post.user?.profile_picture} />
-              <AvatarFallback>
-                {post.user?.firstname[0] + post.user?.lastname[0]}
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <p className="text-sm font-medium leading-none mt-2">
-                {post.user?.firstname} {post.user?.lastname}
-                {post.posted_at && (
-                  <span className="text-sm text-muted-foreground">
-                    {" · "}
-                    {formatTimeSince(post.posted_at)}
-                  </span>
-                )}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                @{post.user?.username}
-              </p>
-            </div>
-          </Link>
+      <CardHeader className="">
+        <div className="flex-row justify-between items-start">
+          <div className="flex items-center justify-between space-x-4">
+            <Link href="#" className="flex items-center space-x-4">
+              <Avatar>
+                <AvatarImage src={post.user?.profile_picture} />
+                <AvatarFallback>
+                  {post.user?.firstname[0] + post.user?.lastname[0]}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="text-sm font-medium leading-none mt-2">
+                  {post.user?.firstname} {post.user?.lastname}
+                  {post.posted_at && (
+                    <span className="text-sm text-muted-foreground">
+                      {" · "}
+                      {formatTimeSince(post.posted_at)}
+                    </span>
+                  )}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  @{post.user?.username}
+                </p>
+              </div>
+            </Link>
+            <Button variant="ghost" size="icon" className="!m-0">
+              <Share2 strokeWidth={1.5} />
+            </Button>
+          </div>
+          <div className="flex gap-2 mt-1 items-center ml-4">
+            <CornerDownRight />
+            <p className="">
+              is feeling <span className="font-bold">frustrated</span>{" "}
+            </p>
+            <span className="text-2xl">😩</span>
+          </div>
         </div>
-        <Button variant="ghost" size="icon" className="!m-0">
-          <Share2 strokeWidth={1.5} />
-        </Button>
       </CardHeader>
+
       <CardContent className="h-max block">
         <p className="text-foreground ">{post.body}</p>
 

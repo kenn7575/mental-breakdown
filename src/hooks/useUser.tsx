@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { getTokenPayload } from "@/lib/data/getTokenPayload"; // Adjust the import path as necessary
+import { getTokenPayload } from "@/app/actions/getTokenPayload"; // Adjust the import path as necessary
 import { User } from "@/lib/types";
 
 export const useUser = () => {

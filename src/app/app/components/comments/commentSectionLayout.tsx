@@ -12,7 +12,7 @@ import {
 import { CommentSectionContent } from "./commentSectionContent";
 import { useComments } from "../../../../hooks/useComments";
 import { MessageCircle } from "lucide-react";
-import { use, useEffect } from "react";
+
 export function CommentSectionLayout({
   postId,
   commentCount,
