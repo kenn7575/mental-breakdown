@@ -47,6 +47,7 @@
     "date-fns": "^3.6.0",
     "firebase": "^10.12.3",
     "jose": "^5.4.1",
+    "lodash": "^4.17.21",
     "lucide-react": "^0.397.0",
     "neo4j-driver": "^5.21.0",
     "next": "14.2.4",
@@ -62,6 +63,7 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
+    "@types/lodash": "^4.17.7",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

@@ -9,15 +9,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import Image from "next/image";
+import { Label } from "@/components/ui/label";
+
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { use, useEffect, useRef, useState } from "react";
@@ -25,20 +24,31 @@ import { use, useEffect, useRef, useState } from "react";
 const maxTitleLength = 75;
 const maxDescriptionLength = 1000;
 
-import { Image, ImagePlay, Smile, UserRoundSearch } from "lucide-react";
+import {
+  Image as ImageIcon,
+  ImagePlay,
+  Smile,
+  UserRoundSearch,
+  X,
+} from "lucide-react";
 import { GifSelector } from "./components/gifSelector";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { uploadFile } from "@/lib/firebase";
+import { EmotionSelector } from "./components/emotionSelector";
+import { Badge } from "@/components/ui/badge";
+import { Emotion } from "@/lib/types";
+import { ImageSelector } from "./components/imageSelector";
+import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { VisibilitySelector } from "./components/visibilitySelector";
+import SmartTextArea from "./components/smartTextArea";
 
 // Render the React Component and pass it your fetchGifs as a prop
 
 export default function CardWithForm() {
-  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState<null | HTMLImageElement>(null);
-
-  //ref for image
-  //   const image = useRef<null | HTMLImageElement>(null);
+  const [emotion, setEmotion] = useState<Emotion | null>(null);
 
   return (
     <div className="flex justify-center items-center px-4 mt-4">
@@ -46,63 +56,26 @@ export default function CardWithForm() {
         <CardHeader>
           <CardTitle>Report mental breakdown</CardTitle>
           <CardDescription>
-            We care about your mental health. Tell us what's going on.
+            <Label htmlFor="description">
+              We care about your mental health. Tell us what's going on.
+            </Label>
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form>
             <div className="grid w-full items-center gap-8">
               <div className="flex flex-col space-y-1.5 ">
-                <Label htmlFor="title">Title</Label>
                 <div className="relative">
-                  <Input
-                    maxLength={maxTitleLength}
-                    id="title"
-                    onChange={(e) => {
-                      setTitle(e.currentTarget.value);
-                    }}
-                    placeholder="Name of your project"
-                  />
-                  <p
-                    className={cn(
-                      title.length === maxTitleLength && "!text-red-500",
-                      "text-sm text-muted-foreground font-semibold absolute top-1 right-2"
-                    )}
-                  >
-                    {maxTitleLength - title.length}
-                  </p>
-                </div>
-              </div>
-              {/* <Input
-                type="file"
-                accept="image/*"
-                onInput={(e) => {
-                  console.log(e.currentTarget.files);
-                  if (!e.currentTarget.files) return;
-                  //create a img element and save it in image ref
-                  const img = document.createElement("img");
-                  img.src = URL.createObjectURL(e.currentTarget.files[0]);
-                  image.current = img;
-                }}
-                id="image"
-                onChange={(e) => {
-                  setTitle(e.currentTarget.value);
-                }}
-                placeholder="Name of your project"
-              />*/}
-
-              <div className="flex flex-col space-y-1.5 ">
-                <Label htmlFor="description">Description</Label>
-                <div className="relative">
-                  <Textarea
-                    className="h-32 max-h-60"
+                  {/* <Textarea
+                    className="h-32 max-h-60 pr-9d"
                     maxLength={maxDescriptionLength}
                     id="description"
                     onChange={(e) => {
                       setDescription(e.currentTarget.value);
                     }}
-                    placeholder="Description of your project"
-                  />
+                    placeholder="What caused you to have a mental breakdown?"
+                  /> */}
+                  <SmartTextArea />
                   <p
                     className={cn(
                       description.length === maxDescriptionLength &&
@@ -113,64 +86,114 @@ export default function CardWithForm() {
                     {maxDescriptionLength - description.length}
                   </p>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  What caused you to have a mental breakdown?
-                </p>
+                <p className="text-sm text-muted-foreground"></p>
               </div>
             </div>
           </form>
-          {image !== null && (
-            <img
-              src={image.src}
-              alt="uploaded image"
-              className="h-full object-contain w-full max-h-60  mt-2 rounded-md"
-            />
-          )}
-        </CardContent>
+          <div className="flex gap-4 overflow-x-scroll mt-4">
+            {image !== null && (
+              <div className="flex gap-4">
+                <div className="w-36 h-36 bg-muted rounded-md relative flex justify-center items-center flex-col gap-2 ">
+                  <Button
+                    className="cursor-pointer bg-transparent absolute top-0 left-0  p-0 h-min w-min"
+                    onClick={() => {
+                      setImage(null);
+                    }}
+                  >
+                    <Badge variant="destructive" className="gap-1">
+                      <X size={18} />
+                      Graphic
+                    </Badge>
+                  </Button>
+                  {image.src.split(".").at(-1)?.includes("gif") ? (
+                    <img
+                      src={image.src}
+                      alt={image.alt || "gif"}
+                      className="h-full object-cover m-0 w-full max-h-60  rounded-md"
+                      height={110}
+                      width={110}
+                    />
+                  ) : (
+                    <Image
+                      src={image.src}
+                      alt={image.alt || "uploaded file"}
+                      className="h-full object-cover w-full max-h-60  mt-0 rounded-md"
+                      height={120}
+                      width={120}
+                    />
+                  )}
+                </div>
+              </div>
+            )}
 
+            {emotion !== null && (
+              <div className="flex gap-4">
+                <div className="w-36 h-36 bg-muted rounded-md relative flex justify-center items-center flex-col gap-2 p-2 pt-4">
+                  <Button
+                    className="cursor-pointer bg-transparent absolute top-0 left-0  p-0 h-min w-min"
+                    onClick={() => {
+                      setEmotion(null);
+                    }}
+                  >
+                    <Badge variant="destructive" className="gap-1">
+                      <X size={18} />
+                      Emotion
+                    </Badge>
+                  </Button>
+                  <Image
+                    src={emotion.image}
+                    alt={emotion.name}
+                    height={60}
+                    width={60}
+                  />
+                  <p className="text-center text-sm font-medium text-wrap">
+                    {emotion.name}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        </CardContent>
         <CardFooter className="flex flex-col">
           <div className="flex justify-between border-input  py-2 px-4 w-full bg-muted items-center rounded-md">
             <p className="font-semibold">Add to your post</p>
             <div className="flex gap-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => {
-                  //create file input element and trigger click
-                  const input = document.createElement("input");
-                  input.type = "file";
-                  input.accept = "image/*";
-                  input.onchange = (e) => {
-                    if (!input.files) return;
-                    //create a img element and save it in image ref
-                    const img = document.createElement("img");
-                    img.src = URL.createObjectURL(input.files[0]);
-                    setImage(img);
-                    uploadFile(input.files[0] as File, "testImage");
-                  };
-                  input.click();
+              <ImageSelector
+                onImageSelect={(image) => {
+                  setImage(image);
                 }}
-              >
-                <Image />
-              </Button>
+                disabled={
+                  image ? image.src.split(".").at(-1)?.includes("gif") : false
+                }
+              />
               <Button variant="ghost" size="icon">
                 <UserRoundSearch />
               </Button>
+
               <GifSelector
-                onGifSelect={(url) => {
-                  const img = document.createElement("img");
-                  img.src = url;
-                  setImage(img);
+                onGifSelect={(image) => {
+                  setImage(image);
+                  console.log("git updated");
+                }}
+                disabled={
+                  image ? !image.src.split(".").at(-1)?.includes("gif") : false
+                }
+              />
+              <EmotionSelector
+                onEmotionSelect={(e) => {
+                  console.log(e);
+                  setEmotion(e);
                 }}
               />
-              <Button variant="ghost" size="icon">
-                <Smile />
-              </Button>
             </div>
           </div>
+
           <div className="flex justify-between w-full mt-4">
             <Button variant="outline">Cancel</Button>
-            <Button>Deploy</Button>
+            <div className="flex gap-2">
+              <VisibilitySelector />
+              <Button>Post</Button>
+            </div>
           </div>
         </CardFooter>
       </Card>

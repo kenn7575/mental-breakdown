@@ -90,3 +90,7 @@ export interface UserFormState {
   serverError?: string;
   data?: User;
 }
+export interface Emotion {
+  name: string;
+  image: string;
+}

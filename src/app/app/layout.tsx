@@ -28,6 +28,7 @@ import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
+import { ModeToggle } from "@/components/modeToggle";
 
 export default function RootLayout({
   children,
@@ -88,6 +89,7 @@ export default function RootLayout({
             </nav>
 
             <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
+              <ModeToggle />
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link
@@ -158,6 +160,7 @@ export default function RootLayout({
                     Settings
                   </Link>
                 </nav>
+                <ModeToggle />
               </SheetContent>
             </Sheet>
 

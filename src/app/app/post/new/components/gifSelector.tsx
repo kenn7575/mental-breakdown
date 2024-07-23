@@ -14,8 +14,10 @@ import { Input } from "@/components/ui/input";
 
 export function GifSelector({
   onGifSelect,
+  disabled = false,
 }: {
-  onGifSelect: (gif: string) => void;
+  onGifSelect: (gif: HTMLImageElement) => void;
+  disabled?: boolean;
 }) {
   const gf = new GiphyFetch(process.env.NEXT_PUBLIC_GIPHY_API_KEY || "");
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -44,7 +46,7 @@ export function GifSelector({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="icon">
+        <Button disabled={disabled} variant="ghost" size="icon">
           <ImagePlay />
         </Button>
       </PopoverTrigger>
@@ -71,8 +73,11 @@ export function GifSelector({
             ) : (
               <Grid
                 key={searchQuery} // Force Grid to re-render on search query change
-                onGifClick={(gif) => {
-                  onGifSelect(gif.images.original.url);
+                onGifClick={(gifObj) => {
+                  const img = document.createElement("img");
+                  img.src = gifObj.images.original.url;
+                  img.alt = gifObj.alt_text || searchQuery;
+                  onGifSelect(img);
                 }}
                 noLink={true}
                 className="hover:cursor-pointer"

@@ -1,4 +1,6 @@
-const emotions: { name: string; image: string }[] = [
+import { Emotion } from "../types";
+
+export const emotions: Emotion[] = [
   { name: "Sad", image: "/emojis/sobbing-face.png" },
   { name: "Silly", image: "/emojis/zany-face.png" },
   { name: "Crazy", image: "/emojis/upside-down-dizzy-face.png" },
@@ -10,9 +12,8 @@ const emotions: { name: string; image: string }[] = [
   { name: "Drained", image: "/emojis/weary-face.png" },
   { name: "Exhausted", image: "/emojis/tongue-on-the-floor-face.png" },
   { name: "Emotional", image: "/emojis/loudly-crying-face.png" },
-  { name: "Annoyed", image: "/emojis/skeptical-face.png" },
   { name: "Bored", image: "/emojis/huge-yawn-face.png" },
-  { name: "Disappointed", image: "/emojis/confused-face.png.png" },
+  { name: "Disappointed", image: "/emojis/confused-face.png" },
   { name: "Sorry", image: "/emojis/emotional-face.png" },
   { name: "Worried", image: "/emojis/clenched-teeth-scared-face.png" },
   { name: "Bad", image: "/emojis/thumbs-down-face.png" },
@@ -34,10 +35,10 @@ const emotions: { name: string; image: string }[] = [
   { name: "Stressed", image: "/emojis/downcast-face-with-sweat.png" },
   { name: "Meh", image: "/emojis/neutral-face.png" },
   { name: "Terrible", image: "/emojis/persevering-face.png" },
-  { name: "Frustrated", image: "😤" },
+  { name: "Frustrated", image: "/emojis/hangry-face.png" },
   { name: "Old", image: "/emojis/expressionless-face.png" },
   { name: "Ashamed", image: "/emojis/facepalm-face.png" },
-  { name: "Stupid", image: "/emojis/angry-astonished-face.png" },
+  { name: "Stupid", image: "/emojis/drooling-face.png" },
   { name: "Like dog crap", image: "/emojis/crying-poo.png" },
   { name: "Lazy", image: "/emojis/stoned-face.png" },
   { name: "Lost", image: "/emojis/face-with-binoculars.png" },
@@ -86,4 +87,5 @@ const emotions: { name: string; image: string }[] = [
   { name: "Affright", image: "/emojis/face-with-a-bed-sheets.png" },
   { name: "Broke", image: "/emojis/face-with-head-bandage.png" },
   { name: "Invisible", image: "/emojis/invisible.png" },
+  { name: "A menace to society", image: "/emojis/smug-face.png" },
 ];
