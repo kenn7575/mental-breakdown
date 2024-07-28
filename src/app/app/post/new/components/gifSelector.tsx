@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect, useCallback } from "react";
 import { Grid } from "@giphy/react-components";
 import { GifsResult, GiphyFetch } from "@giphy/js-fetch-api";
@@ -6,12 +7,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-
 import { Button } from "@/components/ui/button";
 import { ImagePlay } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
-
 export function GifSelector({
   onGifSelect,
   disabled = false,

@@ -1,5 +1,5 @@
-// components/TextArea.tsx
-import React, { useState, useRef, useEffect } from "react";
+"use client";
+import React, { useState, useRef } from "react";
 import { debounce } from "lodash";
 import { getSuggestions } from "../actions/getSuggestions";
 import { Card } from "@/components/ui/card";

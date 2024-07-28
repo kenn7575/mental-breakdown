@@ -9,18 +9,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Image from "next/image";
 import { Label } from "@/components/ui/label";
-
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-
 const maxDescriptionLength = 1000;
-
-import { Image as ImageIcon, X } from "lucide-react";
 import { GifSelector } from "./components/gifSelector";
 import { EmotionSelector } from "./components/emotionSelector";
-import { Badge } from "@/components/ui/badge";
 import { MBEmotion, MBSeverity } from "@/lib/types";
 import { ImageSelector } from "./components/imageSelector";
 import { VisibilitySelector } from "./components/visibilitySelector";

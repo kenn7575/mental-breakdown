@@ -1,30 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
-
 import "../style.css";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-
-import { useRef, useState } from "react";
-import {
-  getColor,
-  getName,
-  getTextColor,
-  severityList,
-} from "@/lib/ui/getMBSeverity";
-import {} from "@/lib/ui/getMBSeverity";
+import { severityList } from "@/lib/ui/posts/severity/severityList";
 import {
   Popover,
   PopoverContent,

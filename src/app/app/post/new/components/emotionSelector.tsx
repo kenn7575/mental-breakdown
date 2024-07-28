@@ -1,5 +1,6 @@
+"use client";
 import { useState, useEffect, useCallback } from "react";
-import { emotions } from "@/lib/emojis/EmotionList";
+import { emotions } from "@/lib/ui/posts/emojis/EmotionList";
 import Image from "next/image";
 import "../style.css";
 import {
