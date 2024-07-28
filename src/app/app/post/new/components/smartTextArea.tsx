@@ -8,8 +8,8 @@ interface Suggestion {
   id: string;
   name: string;
 }
-
-const TextArea: React.FC = () => {
+import { Textarea as ShadcnTextArea } from "@/components/ui/textarea";
+export function TextArea({ onInput }: { onInput: (text: string) => void }) {
   const [text, setText] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -33,6 +33,7 @@ const TextArea: React.FC = () => {
 
   const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = event.target.value;
+    onInput(value);
     setText(value);
 
     const cursorPosition = event.target.selectionStart;
@@ -44,7 +45,7 @@ const TextArea: React.FC = () => {
 
       const query = match[0].slice(1);
       setSymbol(activationSymbol);
-      fetchSuggestions(query);
+      fetchSuggestions(query.toLowerCase());
     } else {
       setShowSuggestions(false);
       setSymbol(null);
@@ -73,14 +74,14 @@ const TextArea: React.FC = () => {
 
   return (
     <div className="relative w-full">
-      <textarea
+      <ShadcnTextArea
         onBlur={() => {
           setTimeout(() => {
             setShowSuggestions(false);
           }, 200);
         }}
         ref={textareaRef}
-        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+        className="w-full p-2  bg-muted min-h-28 rounded-md "
         value={text}
         onChange={handleInput}
         placeholder="Type something..."
@@ -104,6 +105,6 @@ const TextArea: React.FC = () => {
       )}
     </div>
   );
-};
+}
 
 export default TextArea;

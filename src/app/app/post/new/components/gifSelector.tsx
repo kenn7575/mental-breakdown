@@ -62,7 +62,7 @@ export function GifSelector({
             />
             <img
               src="/giphy.png"
-              className="mix-blend-screen ml-auto object-contain"
+              className="invert ml-auto object-contain dark:invert-0 dark:mix-blend-screen"
               width="90px"
               alt="powered by giphy"
             />

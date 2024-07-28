@@ -13,12 +13,12 @@ import { Smile } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { Emotion } from "@/lib/types";
+import { MBEmotion } from "@/lib/types";
 
 export function EmotionSelector({
   onEmotionSelect,
 }: {
-  onEmotionSelect: ({ image, name }: Emotion) => void;
+  onEmotionSelect: ({ image, name }: MBEmotion) => void;
 }) {
   const [search, setSearch] = useState("");
   const [emojiList, setEmojiList] = useState(emotions);
@@ -40,7 +40,7 @@ export function EmotionSelector({
           <Smile />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="emotion-card-with max-h-80 ">
+      <PopoverContent className="emotion-card-width max-h-80 ">
         <div>
           <div className="flex items-center mb-2">
             <Input

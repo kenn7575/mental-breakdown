@@ -90,7 +90,14 @@ export interface UserFormState {
   serverError?: string;
   data?: User;
 }
-export interface Emotion {
+export interface MBEmotion {
   name: string;
   image: string;
+}
+
+export interface MBSeverity {
+  id: number;
+  name: string;
+  textColor: string;
+  color: string;
 }
