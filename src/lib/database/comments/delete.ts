@@ -1,7 +1,6 @@
 "use server";
-import { getDriver } from "../../../neo4j";
+import { getDriver } from "../../neo4j";
 import type { Session } from "neo4j-driver";
-import { DeletePostComment } from "../../../types";
 
 import { zodValidate } from "@/lib/zodValidate";
 import { getTokenPayload } from "@/app/actions/getTokenPayload";

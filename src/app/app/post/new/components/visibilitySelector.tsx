@@ -10,7 +10,11 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ChevronsUpDown } from "lucide-react";
 import { useState } from "react";
 
-export function VisibilitySelector() {
+export function VisibilitySelector({
+  onVisibilitySelect,
+}: {
+  onVisibilitySelect: (option: "public" | "friends" | "anonymous") => void;
+}) {
   const [option, setOption] = useState({ value: "public", label: "Public" });
   return (
     <Popover>
@@ -39,6 +43,7 @@ export function VisibilitySelector() {
                   id="public"
                   onClick={() => {
                     setOption({ value: "public", label: "Public" });
+                    onVisibilitySelect("public");
                   }}
                 />
                 <Label htmlFor="r1">Public</Label>
@@ -54,6 +59,7 @@ export function VisibilitySelector() {
                   id="friends"
                   onClick={() => {
                     setOption({ value: "friends", label: "Friends" });
+                    onVisibilitySelect("friends");
                   }}
                 />
                 <Label htmlFor="r2">Friends</Label>
@@ -69,6 +75,7 @@ export function VisibilitySelector() {
                   id="r3"
                   onClick={() => {
                     setOption({ value: "anonymous", label: "Anonymous" });
+                    onVisibilitySelect("anonymous");
                   }}
                 />
                 <Label htmlFor="anonymous">Anonymous</Label>

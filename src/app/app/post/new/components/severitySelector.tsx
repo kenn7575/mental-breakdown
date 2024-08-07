@@ -1,7 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import "../style.css";
-import { severityList } from "@/lib/ui/posts/severity/severityList";
+import { severityList } from "@/lib/client/posts/severity/severityList";
 import {
   Popover,
   PopoverContent,

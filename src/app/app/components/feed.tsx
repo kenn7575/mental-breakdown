@@ -1,4 +1,4 @@
-import { getPosts } from "@/lib/data/posts/getPost";
+import { getPosts } from "@/lib/database/posts/get";
 import Post from "./post";
 
 export default async function Feed() {

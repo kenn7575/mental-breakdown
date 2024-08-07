@@ -15,7 +15,7 @@ import { useState } from "react";
 const maxDescriptionLength = 1000;
 import { GifSelector } from "./components/gifSelector";
 import { EmotionSelector } from "./components/emotionSelector";
-import { MBEmotion, MBSeverity } from "@/lib/types";
+import { MBEmotion, MBSeverity, MBVisibility } from "@/lib/types";
 import { ImageSelector } from "./components/imageSelector";
 import { VisibilitySelector } from "./components/visibilitySelector";
 import SmartTextArea from "./components/smartTextArea";
@@ -24,10 +24,38 @@ import { ActivePostElement } from "./components/activePostElements";
 
 // Render the React Component and pass it your fetchGifs as a prop
 export default function CardWithForm() {
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState<string>("");
   const [image, setImage] = useState<null | HTMLImageElement>(null);
+  const [file, setFile] = useState<File | null>(null);
   const [emotion, setEmotion] = useState<MBEmotion | null>(null);
   const [severity, setSeverity] = useState<MBSeverity | null>(null);
+  const [gifURL, setGifURL] = useState<string | null>(null);
+  const [visibility, setVisibility] = useState<MBVisibility>("public");
+
+  async function post() {
+    console.log("Sending data");
+
+    const formData = new FormData();
+    if (file) formData.append("file", file);
+    formData.append(
+      "data",
+      JSON.stringify({
+        description,
+        gifURL,
+        emotion,
+        severity,
+        visibility,
+      })
+    );
+
+    const res = await fetch("./new/api", {
+      method: "POST",
+      // headers: {
+      //   "Content-Type": "multipart/form-data",
+      // },
+      body: formData,
+    });
+  }
 
   return (
     <div className="flex justify-center items-center px-4 mt-4">
@@ -78,8 +106,24 @@ export default function CardWithForm() {
             <p className="font-semibold">Add to your post</p>
             <div className="flex gap-2">
               <ImageSelector
-                onImageSelect={(image) => {
-                  setImage(image);
+                onImageSelect={(file) => {
+                  console.log("file selected");
+                  setFile(file);
+                  // Convert to image and set image
+                  let reader = new FileReader();
+                  reader.onload = function (e) {
+                    if (e.target) {
+                      let img = new Image();
+                      img.src = e.target.result as string;
+                      img.onload = () => {
+                        console.log("image loaded");
+                        setImage(img);
+                      };
+                    } else {
+                      console.log("no target");
+                    }
+                  };
+                  reader.readAsDataURL(file);
                 }}
                 disabled={
                   image ? image.src.split(".").at(-1)?.includes("gif") : false
@@ -94,6 +138,7 @@ export default function CardWithForm() {
               <GifSelector
                 onGifSelect={(image) => {
                   setImage(image);
+                  setGifURL(image.src);
                   console.log("git updated");
                 }}
                 disabled={
@@ -112,8 +157,18 @@ export default function CardWithForm() {
           <div className="flex justify-between w-full mt-4">
             <Button variant="outline">Cancel</Button>
             <div className="flex gap-2">
-              <VisibilitySelector />
-              <Button>Post</Button>
+              <VisibilitySelector
+                onVisibilitySelect={(option) => {
+                  setVisibility(option);
+                }}
+              />
+              <Button
+                onClick={() => {
+                  post();
+                }}
+              >
+                Post
+              </Button>
             </div>
           </div>
         </CardFooter>

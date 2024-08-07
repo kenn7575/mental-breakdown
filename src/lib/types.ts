@@ -1,3 +1,4 @@
+// User
 export interface User {
   type: "node";
   id: string;
@@ -19,12 +20,16 @@ export interface User {
   friends?: string[];
 }
 
+// Post
 export interface Post {
   type: "node";
   id: string;
   title: string;
   body: string;
-  image_url?: string;
+
+  publicImageUrl?: string;
+  imageRef?: string;
+  rawImageBytes?: string;
 
   //additional properties
   user: User;
@@ -34,6 +39,17 @@ export interface Post {
   comment_count?: number;
   comments?: Comment[];
   tags?: string[];
+}
+export interface CreatePost {
+  description: string;
+  image: HTMLImageElement | null;
+  publicImageUrl?: string;
+  privateImageUrl?: string;
+  imagePath: string;
+
+  emotion: MBEmotion | null;
+  severity: MBSeverity | null;
+  visibility: MBVisibility;
 }
 
 export interface Reaction {
@@ -77,9 +93,6 @@ export interface CreatePostComment {
   post_id: string;
   comment: string;
 }
-export interface DeletePostComment {
-  commentId: string;
-}
 
 export interface UserFormState {
   success: boolean;
@@ -101,3 +114,4 @@ export interface MBSeverity {
   textColor: string;
   color: string;
 }
+export type MBVisibility = "public" | "friends" | "anonymous";

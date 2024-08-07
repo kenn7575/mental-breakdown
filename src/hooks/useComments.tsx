@@ -1,8 +1,8 @@
 // commentsContext.tsx
-import { detelePostComment } from "@/lib/data/posts/comments/deleteComment";
-import { createPostComment } from "@/lib/data/posts/comments/createPostComment";
-import { createPostCommentReaction } from "@/lib/data/posts/comments/reactions/createPostCommentReaction";
-import { getPostComments } from "@/lib/data/posts/comments/getPostComments";
+import { detelePostComment } from "@/lib/database/comments/delete";
+import { createPostComment } from "@/lib/database/comments/post";
+import { createPostCommentReaction } from "@/lib/database/commentReactions/post";
+import { getPostComments } from "@/lib/database/comments/get";
 // commentsContext.tsx
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import { Comment, Reaction } from "@/lib/types";

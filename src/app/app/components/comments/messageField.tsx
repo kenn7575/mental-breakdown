@@ -3,8 +3,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useComments } from "../../../../hooks/useComments";
 import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
-import { useRef, useState } from "react";
-import { set } from "date-fns";
+import { useState } from "react";
 export function MessageField({ postId }: { postId: string }) {
   const { addComment } = useComments();
   const [comment, setComment] = useState("");
