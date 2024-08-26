@@ -16,10 +16,10 @@ import { CornerDownRight, Share2 } from "lucide-react";
 import { getTokenPayload } from "@/app/actions/getTokenPayload";
 
 import { CommentSection } from "./comments/commentSection";
-import type { Post as PostType } from "@/lib/types";
+import type { DisplayPost } from "@/lib/types/post";
 import { formatTimeSince } from "@/lib/utils";
 import ReactionMenu from "./reactions/reactionMenu";
-export default async function Post({ post }: { post: PostType }) {
+export default async function Post({ post }: { post: DisplayPost }) {
   const user = await getTokenPayload();
   console.log("post: ", post);
   return (

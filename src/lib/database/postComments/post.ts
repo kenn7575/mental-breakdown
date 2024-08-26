@@ -1,7 +1,9 @@
 "use server";
 import { getDriver } from "../../neo4j";
 import type { Session } from "neo4j-driver";
-import { Comment, CreatePostComment, Post, User } from "../../types";
+import { Comment, CreatePostComment } from "@/lib/types/comment";
+import { User } from "@/lib/types/user";
+import { Post } from "@/lib/types/post";
 import { createPostCommentSchema } from "@/lib/zodSchemas";
 import { zodValidate } from "@/lib/zodValidate";
 import { getTokenPayload } from "@/app/actions/getTokenPayload";

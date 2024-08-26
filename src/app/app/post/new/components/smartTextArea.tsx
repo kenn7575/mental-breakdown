@@ -9,7 +9,13 @@ interface Suggestion {
   name: string;
 }
 import { Textarea as ShadcnTextArea } from "@/components/ui/textarea";
-export function TextArea({ onInput }: { onInput: (text: string) => void }) {
+export function TextArea({
+  onInput,
+  maxLength,
+}: {
+  onInput: (text: string) => void;
+  maxLength: number;
+}) {
   const [text, setText] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -65,6 +71,7 @@ export function TextArea({ onInput }: { onInput: (text: string) => void }) {
           textBeforeCursor.replace(query, `${symbol}${suggestion.name} `) +
           textAfterCursor;
         setText(newText);
+        onInput(newText);
         setShowSuggestions(false);
         setSymbol(null);
         textareaRef.current.focus();
@@ -75,6 +82,7 @@ export function TextArea({ onInput }: { onInput: (text: string) => void }) {
   return (
     <div className="relative w-full">
       <ShadcnTextArea
+        maxLength={maxLength}
         onBlur={() => {
           setTimeout(() => {
             setShowSuggestions(false);
@@ -94,7 +102,7 @@ export function TextArea({ onInput }: { onInput: (text: string) => void }) {
                 <li
                   key={suggestion.id}
                   onClick={() => handleSuggestionClick(suggestion)}
-                  className="cursor-pointer hover:bg-gray-100 p-2"
+                  className="cursor-pointer hover:bg-foreground/10 p-2"
                 >
                   #{suggestion.name}
                 </li>

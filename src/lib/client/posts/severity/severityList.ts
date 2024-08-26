@@ -1,4 +1,4 @@
-import { MBSeverity } from "@/lib/types";
+import { MBSeverity } from "@/lib/types/post";
 
 export const severityList: MBSeverity[] = [
   {

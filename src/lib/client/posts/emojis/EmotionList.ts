@@ -1,4 +1,4 @@
-import type { MBEmotion } from "@/lib/types";
+import type { MBEmotion } from "@/lib/types/post";
 export const emotions: MBEmotion[] = [
   { name: "Sad", image: "/emojis/sobbing-face.png" },
   { name: "Silly", image: "/emojis/zany-face.png" },

@@ -16,7 +16,7 @@ import {
   ThumbsDown,
   ThumbsUp,
 } from "lucide-react";
-import type { Comment } from "@/lib/types";
+import type { Comment } from "@/lib/types/comment";
 
 import { formatTimeSince, removeSecondEmptyString } from "@/lib/utils";
 import { useComments } from "../../../../hooks/useComments";

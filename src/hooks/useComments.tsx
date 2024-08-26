@@ -5,7 +5,8 @@ import { createPostCommentReaction } from "@/lib/database/commentReactions/post"
 import { getPostComments } from "@/lib/database/comments/get";
 // commentsContext.tsx
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import { Comment, Reaction } from "@/lib/types";
+import { Comment } from "@/lib/types/comment";
+import { PostReaction } from "@/lib/types/reaction";
 
 import { getTokenPayload } from "@/app/actions/getTokenPayload";
 
@@ -73,7 +74,7 @@ export const CommentsProvider = ({ children }: { children: ReactNode }) => {
         throw new Error("User not found");
       }
 
-      const newReaction: Reaction = {
+      const newReaction: PostReaction = {
         id: "0",
         user_id: user.id,
         reaction_type: reactionType,
@@ -121,7 +122,7 @@ export const CommentsProvider = ({ children }: { children: ReactNode }) => {
 
   const addOrUpdateReaction = (
     commentId: string,
-    newReaction: Reaction,
+    newReaction: PostReaction,
     userId: string
   ) => {
     return comments.map((comment) => {

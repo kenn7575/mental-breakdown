@@ -1,7 +1,7 @@
 "use client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MBEmotion, MBSeverity } from "@/lib/types";
+import { MBEmotion, MBSeverity } from "@/lib/types/post";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
 import Image from "next/image";

@@ -4,7 +4,7 @@ import { getDriver } from "@/lib/neo4j";
 import { CreateUserSchema } from "@/lib/zodSchemas";
 import { zodValidate } from "@/lib/zodValidate";
 import type { Session } from "neo4j-driver";
-import { createToken } from "./createAuthToken";
+import { createToken } from "../../../app/actions/createAuthToken";
 export async function createUser(
   prevState: any,
   formData: FormData
@@ -67,7 +67,8 @@ export async function createUser(
       xp: $xp, 
       color_theme: $color_theme, 
       email_verified: $email_verified, 
-      email_notifications: $email_notifications 
+      email_notifications: $email_notifications,
+      isUnderQuarantine: false,
     }) RETURN u, elementId(u) as id;`,
       {
         email: email,

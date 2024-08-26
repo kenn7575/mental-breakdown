@@ -14,7 +14,7 @@ import { Smile } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { MBEmotion } from "@/lib/types";
+import { MBEmotion } from "@/lib/types/post";
 
 export function EmotionSelector({
   onEmotionSelect,

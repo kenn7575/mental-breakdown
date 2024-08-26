@@ -1,7 +1,8 @@
 "use server";
 import { getDriver } from "@/lib/neo4j";
 import type { Session } from "neo4j-driver";
-import { CreatePostCommentReaction, Post } from "@/lib/types";
+import { CreatePostCommentReaction } from "@/lib/types/reaction";
+import { Post } from "@/lib/types/post";
 import { createPostCommentReactionSchema as cpcrs } from "@/lib/zodSchemas";
 import { zodValidate } from "@/lib/zodValidate";
 import { getTokenPayload } from "@/app/actions/getTokenPayload";

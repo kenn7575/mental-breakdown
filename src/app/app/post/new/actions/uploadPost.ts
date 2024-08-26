@@ -1,6 +1,6 @@
 "use server";
 
-import { MBEmotion, MBSeverity } from "@/lib/types";
+import { MBEmotion, MBSeverity } from "@/lib/types/post";
 import { createPostSchema } from "../zodSchemas/createPostSchema";
 
 export async function uploadPost({

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { getTokenPayload } from "@/app/actions/getTokenPayload"; // Adjust the import path as necessary
-import { User } from "@/lib/types";
+import { User } from "@/lib/types/user";
 
 export const useUser = () => {
   const [user, setUser] = useState<User | null>(null);

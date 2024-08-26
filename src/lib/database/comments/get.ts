@@ -2,7 +2,9 @@
 
 import { getDriver } from "../../neo4j";
 import type { Session } from "neo4j-driver";
-import { Comment, Reaction, User } from "../../types";
+import { Comment } from "@/lib/types/comment";
+import { PostReaction } from "@/lib/types/reaction";
+import { User } from "@/lib/types/user";
 export async function getPostComments(postId: string): Promise<Comment[]> {
   const driver = await getDriver();
   const session: Session = driver.session();

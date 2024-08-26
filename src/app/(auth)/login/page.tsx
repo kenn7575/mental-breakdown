@@ -15,7 +15,8 @@ import { Label } from "@/components/ui/label";
 
 import { useEffect } from "react";
 import { useFormState } from "react-dom";
-import { UserFormState, User } from "@/lib/types";
+import { UserFormState } from "@/lib/types/auth";
+import { User } from "@/lib/types/user";
 
 const initialState: UserFormState = {
   success: false,

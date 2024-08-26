@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Gauge } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { MBSeverity } from "@/lib/types";
+import { MBSeverity } from "@/lib/types/post";
 export function SeveritySelector({
   onSeveritySelect,
 }: {

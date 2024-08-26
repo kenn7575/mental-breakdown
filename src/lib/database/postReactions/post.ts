@@ -1,7 +1,7 @@
 "use server";
 import { getDriver } from "../../neo4j";
 import type { Session } from "neo4j-driver";
-import { CreatePostReaction } from "../../types";
+import { CreatePostReaction } from "@/lib/types/reaction";
 import { createPostReactionSchema } from "@/lib/zodSchemas";
 import { zodValidate } from "@/lib/zodValidate";
 import { getTokenPayload } from "@/app/actions/getTokenPayload";
@@ -72,7 +72,7 @@ export async function createPostReaction(data: CreatePostReaction): Promise<{
         // Create a new reaction
         await tx.run(
           `MATCH (u:User{id:$userId}), (p:Post{id:$postId})
-           MERGE (u)-[:REACTED_TO{reaction_type:$reactionType, created_at:$createdAt}]->(p)`,
+           MERGE (u)-[:REACTED_TO{reaction_type:$reactionType, id: toString(randomUUID(), created_at:$createdAt}]->(p)`,
           {
             userId: user.id,
             postId: data.post_id,
